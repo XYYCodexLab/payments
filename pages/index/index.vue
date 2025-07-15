@@ -82,8 +82,8 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 	
 	onLoad(()=>{
 		let info = uni.getAppBaseInfo()
-		//state.version = info?.appVersion
-		state.version = '0.9.0'
+		state.version = info?.appVersion
+		// state.version = '0.9.0'
 	})
 	
 	onPullDownRefresh(async () => {
