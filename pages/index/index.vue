@@ -41,6 +41,14 @@
 						@tapFn="clickToPage"
 					/>
 				</view>
+				<view>
+					<HomeLabel
+						type="3"
+						leftTitle="组织架构"
+						leftSubTitle="团队，管理"
+						@tapFn="gotoTeam"
+					/>
+				</view>
 			</view>
 		</view>
 		
@@ -170,6 +178,12 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 	const gotoAllowance = () => {
 		uni.navigateTo({
 			url: '/pages/allowance/allowance'
+		})
+	}
+	
+	const gotoTeam = () => {
+		uni.navigateTo({
+			url: '/pages/team/team'
 		})
 	}
 	

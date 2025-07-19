@@ -96,6 +96,22 @@
 					}
 				}
 			}
+		},
+		{
+			"path" : "pages/team/team",
+			"style" : 
+			{
+				"navigationBarTitleText" : "组织架构",
+				"enablePullDownRefresh":true,
+				"app-plus": {
+					"scrollIndicator": "none",
+					"titleNView": {
+						"backgroundColor": "#3B82F6",
+						"titleColor": "#FFFFFF",
+						"titleSize": "20px" 
+					}
+				}
+			}
 		}
 	],
 	"tabBar": {

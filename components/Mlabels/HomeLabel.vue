@@ -7,6 +7,9 @@
 			<view v-show="props.type == '2'" class="iconBox2">
 				<uv-icon name="empty-coupon" color="#A855F7" size="30px"></uv-icon>
 			</view>
+			<view v-show="props.type == '3'" class="iconBox3">
+				<uv-icon name="grid" color="#f1c40f" size="30px"></uv-icon>
+			</view>
 			
 			<view class="leftTextBox">
 				<span>{{props.leftTitle}}</span>
@@ -78,6 +81,11 @@
 	.iconBox2{
 		.commonIconBox();
 		background-color: #F3E8FF;
+	}
+	
+	.iconBox3{
+		.commonIconBox();
+		background-color: #f9e79f;
 	}
 	
 	.leftTextBox{
