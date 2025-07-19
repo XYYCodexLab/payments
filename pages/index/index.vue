@@ -103,7 +103,6 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 	
 	onMounted(async () => {
 		await init()
-		console.log(userStore.userInfo)
 	})
 	
 	const init = async () => {
