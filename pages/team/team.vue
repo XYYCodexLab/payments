@@ -81,6 +81,7 @@ import { onPullDownRefresh } from "@dcloudio/uni-app"
 	
 	const getTeamTree = async () => {
 		let res = await acquireTeamList()
+		console.log("res:", res)
 		if(res?.msg == 'success'){
 			state.teamList = res.data
 		}

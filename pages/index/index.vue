@@ -19,6 +19,51 @@
 			</view>
 		</view>
 		
+		<view class="topInfoBox">
+			<view class="infoItem">
+				<view class="infoItemHeader">
+					<uv-icon name="account-fill" color="#2979ff" size="28"></uv-icon>
+					<span>邀请收入</span>
+				</view>
+				
+				<view class="bottomBox">
+					<span class="outSpan">{{state.directReward?.today}}</span>
+					<view v-if="state.directReward?.today - state.directReward?.yesterday > 0 " class="upRateBox">
+						<uv-icon name="arrow-upward" color="#22C55E" size="12"></uv-icon>
+						<span>{{state.directReward?.rateChange}}%</span>
+					</view>
+					<view v-else class="downRateBox">
+						<uv-icon name="arrow-downward" color="#EF4444" size="12"></uv-icon>
+						<span>{{state.directReward?.rateChange}}%</span>
+					</view>
+				</view>
+				
+				<span class="bottomSpan">{{getChangeDirectReward}}</span>
+			</view>
+			
+			<view class="infoItem">
+				<view class="infoItemHeader">
+					<uv-icon name="file-text-fill" color="#2979ff" size="28"></uv-icon>
+					<span>团队收入</span>
+				</view>
+				
+				<view class="bottomBox">
+					<span class="outSpan">{{state.teamReward?.today}}</span>
+					<view v-if="state.teamReward?.today - state.teamReward?.yesterday > 0 " class="upRateBox">
+						<uv-icon name="arrow-upward" color="#22C55E" size="12"></uv-icon>
+						<span>{{state.teamReward?.rateChange}}%</span>
+					</view>
+					<view v-else class="downRateBox">
+						<uv-icon name="arrow-downward" color="#EF4444" size="12"></uv-icon>
+						<span>{{state.teamReward?.rateChange}}%</span>
+					</view>
+				</view>
+				
+				<span class="bottomSpan">{{getChangeTeamReward}}</span>
+				
+			</view>
+		</view>
+		
 		<view class="assestBox">
 			<span class="title">资产分类</span>
 			
@@ -66,11 +111,11 @@
 
 <script setup>
 import { acquireUserInfo } from "@/api/baseApi"
-import { checkVersion } from "@/api/homeApi"
+import { checkVersion, acquireReward } from "@/api/homeApi"
 import { acquireTotalBenefit } from "@/api/inviteApi"
 import { acquireAllowance } from "@/api/allowanceApi"
 	
-import { onMounted, reactive, ref } from "vue"
+import { computed, onMounted, reactive, ref } from "vue"
 import HomeLabel from "@/components/Mlabels/HomeLabel.vue"
 import useUserStore from "@/store/userStore"
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
@@ -83,6 +128,10 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		
 		totalBenefit: '',
 		allowance: '',
+		
+		// reward
+		directReward: null,
+		teamReward: null,
 	})
 	
 	const modal = ref(null)
@@ -108,6 +157,7 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 	const init = async () => {
 		await getUserInfo()
 		await getTotalBenefit()
+		await getUserReward()
 		await getAllowance()
 		await getVerison()
 	}
@@ -116,6 +166,14 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		let res = await acquireUserInfo()
 		if(res?.msg == 'success'){
 			userStore.userInfo = res?.data
+		}
+	}
+	
+	const getUserReward = async () => {
+		let res = await acquireReward()
+		if(res?.msg == 'success'){
+			state.directReward = res.data.directReward
+			state.teamReward = res.data.teamReward
 		}
 	}
 	
@@ -144,6 +202,7 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 			state.allowance = res?.data
 		}
 	}
+
 	
 	const updateVersion = () => {
 		modal.value.close()
@@ -193,6 +252,28 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 			gotoAllowance()
 		}
 	}
+	
+	const getChangeDirectReward = computed(()=>{
+		let res = ''
+		let change = state.directReward?.today - state.directReward?.yesterday
+		if(change > 0){
+			res = `较昨日增加${change}`
+		}else{
+			res = `较昨日减少${Math.abs(change)}`
+		}
+		return res
+	})
+	
+	const getChangeTeamReward = computed(()=>{
+		let res = ''
+		let change = state.teamReward?.today - state.teamReward?.yesterday
+		if(change > 0){
+			res = `较昨日增加${change}`
+		}else{
+			res = `较昨日减少${Math.abs(change)}`
+		}
+		return res
+	})
 	
 </script>
 
@@ -283,6 +364,69 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		display: flex;
 		flex-direction: column;
 		gap: 32rpx;
+	}
+}
+.topInfoBox{
+	margin-top: 20rpx;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	
+	.infoItem{
+		.commonContainer();
+		width: 327rpx;
+		display: flex;
+		flex-direction: column;
+		
+		.infoItemHeader{
+			width: 100%;
+			display: flex;
+			align-items: center;
+			gap: 16rpx;
+			
+			span{
+				.fontStyle(28rpx, 500, 40rpx, #4B5563)
+			}
+		}
+		
+		.bottomBox{
+			width: 100%;
+			margin-top: 10rpx;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			box-sizing: border-box;
+			
+			.commonRate{
+				display: flex;
+				align-items: center;
+				gap: 3rpx;
+			}
+			
+			.upRateBox{
+				.commonRate();
+				span{
+					.fontStyle(24rpx, 400, 32rpx, #22C55E)
+				}
+			}
+			
+			.downRateBox{
+				.commonRate();
+				span{
+					.fontStyle(24rpx, 400, 32rpx, #EF4444)
+				}
+			}
+		}
+		
+		.outSpan{
+			.fontStyle(48rpx, 600, 64rpx, #1F2937)
+		}
+		
+		.bottomSpan{
+			margin-top: 20rpx;
+			.fontStyle(24rpx, 500, 32rpx, #6B7280)
+		}
 	}
 }
 </style>

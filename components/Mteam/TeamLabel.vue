@@ -13,8 +13,11 @@
 					<image :src="props.data.picture" />
 					
 					<view class="leftInfo">
-						<span>{{props.data.name}}</span>
-						<span>{{props.data.phone}}</span>
+						<view class="leftInfoTop">
+							<span class="userNameSapn">{{props.data.name}}</span>
+							<span v-show="props.data?.agent != null" class="agenSpan">{{props.data?.agent}}</span>
+						</view>
+						<span class="accountSpan">{{props.data.phone}}</span>
 					</view>
 				</view>
 				
@@ -140,10 +143,22 @@ import { reactive } from 'vue';
 			flex-direction: column;
 			justify-content: space-between;
 			
-			span:nth-of-type(1){
-				.fontStyle(28rpx, 500, 42rpx, #1F2937)
+			.leftInfoTop{
+				width: 100%;
+				display: flex;
+				align-items: center;
+				gap: 5rpx;
+				
+				.userNameSapn{
+					.fontStyle(28rpx, 500, 42rpx, #1F2937)
+				}
+				
+				.agenSpan{
+					.fontStyle(24rpx, 400, 32rpx, #22C55E)
+				}
 			}
-			span:nth-of-type(2){
+			
+			.accountSpan{
 				.fontStyle(24rpx, 400, 32rpx, #4B5563)
 			}
 		}
