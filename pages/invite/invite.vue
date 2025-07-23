@@ -13,7 +13,7 @@
 						type="1"
 						:leftTitle="item.nickName"
 						:leftSubTitle="item.formatTime"
-						:rightTitle="item.benefit"
+						:rightTitle="item.accumulatAmount"
 						rightSubTitle="已结算"
 					/>
 				</view>
