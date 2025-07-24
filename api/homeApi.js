@@ -9,3 +9,7 @@ export const acquireReward = async () => {
 	return await axios.get('/v2/team/rewardSum')
 }
 
+export const acquireSummary = async () => {
+	return await axios.get('/v2/summary')
+}
+

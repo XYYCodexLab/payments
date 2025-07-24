@@ -9,8 +9,11 @@
 			</view>
 			
 			<view class="leftTextBox">
-				<span>{{props.leftTitle}}</span>
-				<span>{{props.leftSubTitle}}</span>
+				<view class="leftTop">
+					<span>{{props.leftTitle}}</span>
+					<span>{{props.linkId}}</span>
+				</view>
+				<span class="bottomSpan">{{props.leftSubTitle}}</span>
 			</view>
 		</view>
 		
@@ -29,7 +32,8 @@
 		leftTitle: String,
 		leftSubTitle: String,
 		rightTitle: Number,
-		rightSubTitle: String
+		rightSubTitle: String,
+		linkId: String
 	})
 	
 </script>
@@ -78,11 +82,21 @@
 		display: flex;
 		flex-direction: column;
 		
-		span:nth-of-type(1){
-			.fontStyle(28rpx, 500, 42rpx, #1F2937);
+		.leftTop{
+			display: flex;
+			align-items: center;
+			gap: 10rpx;
+			
+			span:nth-of-type(1){
+				.fontStyle(28rpx, 500, 42rpx, #1F2937);
+			}
+			
+			span:nth-of-type(2){
+				.fontStyle(24rpx, 400, 32rpx, #6B7280);
+			}
 		}
 		
-		span:nth-of-type(2){
+		.bottomSpan{
 			.fontStyle(24rpx, 400, 32rpx, #6B7280);
 		}
 	}

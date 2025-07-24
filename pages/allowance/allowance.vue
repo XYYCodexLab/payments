@@ -6,8 +6,8 @@
 				<view class="scrollItem" v-for="(item, index) in state.dataList" :key="index">
 					<ListLabel
 						type="1"
-						leftTitle="收入"
-						:leftSubTitle="item.date"
+						leftTitle="团队津贴"
+						:leftSubTitle="item.formatTime"
 						:rightTitle="item.subsidy"
 						:rightSubTitle="'业绩:'+item.totalPerf"
 					/>
@@ -21,6 +21,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import { acquireAllowanceList } from '@/api/allowanceApi';
+import { formatTimeDay } from '../../utils/timeUtil';
 	
 import ListLabel from '@/components/Mlabels/ListLabel.vue'
 	
@@ -49,8 +50,18 @@ import ListLabel from '@/components/Mlabels/ListLabel.vue'
 		let res = await acquireAllowanceList(requestParam)
 		if(res?.msg == 'success'){
 			let temp_list = res.data?.records
-			state.dataList = state.dataList.concat(temp_list)
+			let add_list = handleList(temp_list)
+			state.dataList = state.dataList.concat(add_list)
 		}
+	}
+	
+	const handleList = (list) => {
+		let res = []
+		for(const item of list){
+			item.formatTime = formatTimeDay(item?.date)
+			res.push(item)
+		}
+		return res
 	}
 	
 </script>

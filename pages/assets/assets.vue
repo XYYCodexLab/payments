@@ -25,6 +25,7 @@
 							:leftSubTitle="item.formatTime"
 							:rightTitle="item.goldenBean"
 							:rightSubTitle="'余额:'+item.goldenBeanBalance"
+							:linkId="item?.linkId"
 						/>
 					</view>
 				</scroll-view>
@@ -37,7 +38,8 @@
 							:leftTitle="item.title"
 							:leftSubTitle="item.formatTime"
 							:rightTitle="item.goldenBean"
-							:rightSubTitle="item.goldenBeanBalance"
+							:rightSubTitle="'余额:'+item.goldenBeanBalance"
+							:linkId="item?.linkId"
 						/>
 					</view>
 				</scroll-view>
@@ -101,6 +103,7 @@ import { onPullDownRefresh } from "@dcloudio/uni-app"
 			pageSize: state.inPageSize
 		}
 		let res = await getAssetsList(requestParam)
+		console.log("res:", res)
 		if(res?.msg == 'success'){
 			let temp_list = res.data?.records
 			let add_list = handleList(temp_list)

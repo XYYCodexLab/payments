@@ -20,54 +20,74 @@
 		</view>
 		
 		<view class="topInfoBox">
-			<view class="infoItem">
-				<view class="infoItemHeader">
-					<uv-icon name="account-fill" color="#2979ff" size="28"></uv-icon>
-					<span>邀请收入</span>
-				</view>
-				
-				<view class="bottomBox">
-					<span class="outSpan">{{state.directReward?.today}}</span>
-					<view v-if="state.directReward?.today - state.directReward?.yesterday > 0 " class="upRateBox">
-						<uv-icon name="arrow-upward" color="#22C55E" size="12"></uv-icon>
-						<span>{{state.directReward?.rateChange}}%</span>
-					</view>
-					<view v-else class="downRateBox">
-						<uv-icon name="arrow-downward" color="#EF4444" size="12"></uv-icon>
-						<span>{{state.directReward?.rateChange}}%</span>
-					</view>
-				</view>
-				
-				<span class="bottomSpan">{{getChangeDirectReward}}</span>
-			</view>
 			
-			<view class="infoItem">
-				<view class="infoItemHeader">
-					<uv-icon name="file-text-fill" color="#2979ff" size="28"></uv-icon>
-					<span>团队收入</span>
-				</view>
-				
-				<view class="bottomBox">
-					<span class="outSpan">{{state.teamReward?.today}}</span>
-					<view v-if="state.teamReward?.today - state.teamReward?.yesterday > 0 " class="upRateBox">
-						<uv-icon name="arrow-upward" color="#22C55E" size="12"></uv-icon>
-						<span>{{state.teamReward?.rateChange}}%</span>
-					</view>
-					<view v-else class="downRateBox">
-						<uv-icon name="arrow-downward" color="#EF4444" size="12"></uv-icon>
-						<span>{{state.teamReward?.rateChange}}%</span>
-					</view>
-				</view>
-				
-				<span class="bottomSpan">{{getChangeTeamReward}}</span>
-				
-			</view>
+			<MTabs
+				title="总收入"
+				rightIcon="star-fill"
+				:data="state.summary?.totalIncome"
+			/>
+			
+			<MTabs
+				title="总支出"
+				rightIcon="star-fill"
+				:data="state.summary?.totalConsume"
+			/>
+			
 		</view>
+		
+		<view class="topInfoBox">
+			
+			<MTabs
+				title="月收入"
+				rightIcon="file-text-fill"
+				:data="state.summary?.monthIncome"
+				:rate="state.summary?.monthIncomeRateChange"
+				rateSign="环比"
+			/>
+			
+			<MTabs
+				title="月支出"
+				rightIcon="file-text-fill"
+				:data="state.summary?.monthConsume"
+				:rate="state.summary?.monthConsumeRateChange"
+				rateSign="环比"
+			/>
+			
+		</view>
+		
+		<view class="topInfoBox">
+			
+			<MTabs
+				title="日收入"
+				rightIcon="account-fill"
+				:data="state.summary?.todayIncome"
+				:rate="state.summary?.todayIncomeRateChange"
+				rateSign="环比"
+			/>
+			
+			<MTabs
+				title="日消费"
+				rightIcon="account-fill"
+				:data="state.summary?.todayConsume"
+				:rate="state.summary?.todayConsumeRateChange"
+				rateSign="环比"
+			/>
+		</view>
+		
+	
 		
 		<view class="assestBox">
 			<span class="title">资产分类</span>
 			
 			<view class="labelBox">
+				<view>
+					<HomeLabel
+						type="3"
+						leftTitle="组织架构"
+						leftSubTitle="团队，管理"
+						@tapFn="gotoTeam"
+					/>
+				</view>
 				<view>
 					<HomeLabel
 						type="1"
@@ -84,14 +104,6 @@
 						leftSubTitle="销售，管理"
 						:rightTitle="state.allowance"
 						@tapFn="clickToPage"
-					/>
-				</view>
-				<view>
-					<HomeLabel
-						type="3"
-						leftTitle="组织架构"
-						leftSubTitle="团队，管理"
-						@tapFn="gotoTeam"
 					/>
 				</view>
 			</view>
@@ -111,14 +123,15 @@
 
 <script setup>
 import { acquireUserInfo } from "@/api/baseApi"
-import { checkVersion, acquireReward } from "@/api/homeApi"
+import { checkVersion, acquireReward, acquireSummary} from "@/api/homeApi"
 import { acquireTotalBenefit } from "@/api/inviteApi"
 import { acquireAllowance } from "@/api/allowanceApi"
 	
-import { computed, onMounted, reactive, ref } from "vue"
+import { computed, onMounted, reactive, ref } from "vue" 
 import HomeLabel from "@/components/Mlabels/HomeLabel.vue"
 import useUserStore from "@/store/userStore"
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
+import MTabs from "@/components/MTabs/index.vue"
 	
 	const state = reactive({
 		version: '',
@@ -129,9 +142,7 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		totalBenefit: '',
 		allowance: '',
 		
-		// reward
-		directReward: null,
-		teamReward: null,
+		summary: null,
 	})
 	
 	const modal = ref(null)
@@ -157,7 +168,7 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 	const init = async () => {
 		await getUserInfo()
 		await getTotalBenefit()
-		await getUserReward()
+		await getUserSummary()
 		await getAllowance()
 		await getVerison()
 	}
@@ -166,14 +177,6 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		let res = await acquireUserInfo()
 		if(res?.msg == 'success'){
 			userStore.userInfo = res?.data
-		}
-	}
-	
-	const getUserReward = async () => {
-		let res = await acquireReward()
-		if(res?.msg == 'success'){
-			state.directReward = res.data.directReward
-			state.teamReward = res.data.teamReward
 		}
 	}
 	
@@ -200,6 +203,13 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 		let res = await acquireAllowance()
 		if(res?.msg == 'success'){
 			state.allowance = res?.data
+		}
+	}
+	
+	const getUserSummary = async () => {
+		let res = await acquireSummary()
+		if(res?.msg == 'success'){
+			state.summary = res?.data
 		}
 	}
 
@@ -252,28 +262,6 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 			gotoAllowance()
 		}
 	}
-	
-	const getChangeDirectReward = computed(()=>{
-		let res = ''
-		let change = state.directReward?.today - state.directReward?.yesterday
-		if(change > 0){
-			res = `较昨日增加${change}`
-		}else{
-			res = `较昨日减少${Math.abs(change)}`
-		}
-		return res
-	})
-	
-	const getChangeTeamReward = computed(()=>{
-		let res = ''
-		let change = state.teamReward?.today - state.teamReward?.yesterday
-		if(change > 0){
-			res = `较昨日增加${change}`
-		}else{
-			res = `较昨日减少${Math.abs(change)}`
-		}
-		return res
-	})
 	
 </script>
 
@@ -383,7 +371,7 @@ import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app"
 			width: 100%;
 			display: flex;
 			align-items: center;
-			gap: 16rpx;
+			justify-content: space-between;
 			
 			span{
 				.fontStyle(28rpx, 500, 40rpx, #4B5563)
