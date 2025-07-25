@@ -19,7 +19,7 @@
 		
 		<view class="rightBox">
 			<span v-if="props.type == '1'" class="spanTop1">+{{props.rightTitle}}</span>
-			<span v-else class="spanTop2">-{{props.rightTitle}}</span>
+			<span v-else class="spanTop2">{{props.rightTitle}}</span>
 			<span class="spanBottom">{{props.rightSubTitle}}</span>
 		</view>
 	</view>
@@ -32,7 +32,7 @@
 		leftTitle: String,
 		leftSubTitle: String,
 		rightTitle: Number,
-		rightSubTitle: String,
+		rightSubTitle: Number,
 		linkId: String
 	})
 	

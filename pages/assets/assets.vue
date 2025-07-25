@@ -23,8 +23,8 @@
 							type="1"
 							:leftTitle="item.title"
 							:leftSubTitle="item.formatTime"
-							:rightTitle="item.goldenBean"
-							:rightSubTitle="'余额:'+item.goldenBeanBalance"
+							:rightTitle="item.rightTitle"
+							:rightSubTitle="item.rightSubTitle"
 							:linkId="item?.linkId"
 						/>
 					</view>
@@ -37,8 +37,8 @@
 							type="2"
 							:leftTitle="item.title"
 							:leftSubTitle="item.formatTime"
-							:rightTitle="item.goldenBean"
-							:rightSubTitle="'余额:'+item.goldenBeanBalance"
+							:rightTitle="item.rightTitle"
+							:rightSubTitle="item.rightSubTitle"
 							:linkId="item?.linkId"
 						/>
 					</view>
@@ -103,7 +103,6 @@ import { onPullDownRefresh } from "@dcloudio/uni-app"
 			pageSize: state.inPageSize
 		}
 		let res = await getAssetsList(requestParam)
-		console.log("res:", res)
 		if(res?.msg == 'success'){
 			let temp_list = res.data?.records
 			let add_list = handleList(temp_list)
@@ -129,15 +128,23 @@ import { onPullDownRefresh } from "@dcloudio/uni-app"
 	const handleList = (list) => {
 		let res = []
 		for(const item of list){
-			if(item.goldenBean == null || item.goldenBean == undefined || item.goldenBean == ''){
-				continue
+			if(item.goldenBean != null){
+				item.rightTitle = item.goldenBean
+				item.rightSubTitle = '余额:' + item.goldenBeanBalance
+			}else if(item.consumerCoupon != null){
+				item.rightTitle = item.consumerCoupon
+				item.rightSubTitle = '余额:' + item.consumerCouponBalance
+			}else if(item.shoppingCoupon != null){
+				item.rightTitle = item.shoppingCoupon
+				item.rightSubTitle = '余额:' + item.shoppingCouponBalance
 			}
-			item.goldenBean = Math.abs(item.goldenBean)
 			item.formatTime = formatTime(item?.occurrenceTime)
 			res.push(item)
 		}
 		return res
 	}
+	
+	
 	
 </script>
 
