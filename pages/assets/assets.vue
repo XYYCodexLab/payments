@@ -128,15 +128,12 @@ import { onPullDownRefresh } from "@dcloudio/uni-app"
 	const handleList = (list) => {
 		let res = []
 		for(const item of list){
+			if(item.goldenBean == null){
+				continue
+			}
 			if(item.goldenBean != null){
 				item.rightTitle = item.goldenBean
 				item.rightSubTitle = '余额:' + item.goldenBeanBalance
-			}else if(item.consumerCoupon != null){
-				item.rightTitle = item.consumerCoupon
-				item.rightSubTitle = '余额:' + item.consumerCouponBalance
-			}else if(item.shoppingCoupon != null){
-				item.rightTitle = item.shoppingCoupon
-				item.rightSubTitle = '余额:' + item.shoppingCouponBalance
 			}
 			item.formatTime = formatTime(item?.occurrenceTime)
 			res.push(item)
